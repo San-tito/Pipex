@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/02/22 17:20:13 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/02/22 19:58:16 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,17 @@
 
 # include "ft_printf.h"
 # include <errno.h>
+# include <stdio.h>
+
+/* ************************************************************************** */
+/*                                Search for command                          */
+/* ************************************************************************** */
+char	*search_for_command(const char *pathname, char **env);
 
 /* ************************************************************************** */
 /*                                Execute a command                           */
 /* ************************************************************************** */
-int	shell_execve(char *command, char **args, char **env);
+int		shell_execve(char *command, char **args, char **env);
 
 /* ************************************************************************** */
 /*                              Special exit statuses                         */

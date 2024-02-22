@@ -6,7 +6,7 @@
 #    By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 18:17:45 by sguzman           #+#    #+#              #
-#    Updated: 2024/02/22 17:01:29 by sguzman          ###   ########.fr        #
+#    Updated: 2024/02/22 19:19:18 by sguzman          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ LIBFTPRINTF		= $(LIBFTPRINTF_PATH)/libftprintf.a
 
 HEADER		= $(INCLUDE_PATH)/pipex.h
 
-SRCS 		= execute_cmd.c
+SRCS 		= execute_cmd.c findcmd.c
 
 MAIN 		= pipex.c 
 
