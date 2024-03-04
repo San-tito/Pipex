@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 19:15:47 by sguzman           #+#    #+#             */
-/*   Updated: 2024/02/22 21:14:59 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/04 17:35:57 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,7 @@ char	*search_for_command(const char *pathname, char **env)
 	else
 	{
 		paths = ft_split(path_list, ':');
-		while (paths)
+		while (*paths)
 		{
 			command = find_in_path_element(pathname, *paths);
 			if (command)

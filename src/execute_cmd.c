@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:51:52 by sguzman           #+#    #+#             */
-/*   Updated: 2024/02/22 19:42:31 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/04 17:41:46 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ int	shell_execve(char *command, char **args, char **env)
 	int	errnum;
 	int	last_command_exit_value;
 
+	last_command_exit_value = 0;
 	execve(command, args, env);
 	errnum = errno;
 	if (errnum != ENOEXEC)
