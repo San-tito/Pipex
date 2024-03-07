@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 19:15:47 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/04 17:35:57 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/07 18:43:06 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static int	absolute_program(const char *string)
 	return (ft_strchr(string, '/') != NULL);
 }
 
-static char	*ft_getenv(const char *name, char **env)
+static char	*ft_getenv(char *name, char **env)
 {
 	size_t	len;
 	int		i;
@@ -35,7 +35,7 @@ static char	*ft_getenv(const char *name, char **env)
 	return (NULL);
 }
 
-static char	*find_in_path_element(const char *name, char *path)
+static char	*find_in_path_element(char *name, char *path)
 {
 	char	*full_path;
 	size_t	path_len;
@@ -56,27 +56,30 @@ static char	*find_in_path_element(const char *name, char *path)
 	return (NULL);
 }
 
-char	*search_for_command(const char *pathname, char **env)
+char	*search_for_command(char *pathname, char **env)
 {
 	char	*command;
 	char	*path_list;
 	char	**paths;
+	int		path_index;
 
+	path_index = 0;
 	path_list = ft_getenv("PATH", env);
 	if (absolute_program(pathname))
-		command = ft_strdup(pathname);
+		return (command = pathname);
 	else if (!path_list || !*path_list)
-		command = ft_strdup(pathname);
-	else
+		return (command = pathname);
+	paths = ft_split(path_list, ':');
+	if (!paths)
+		return (NULL);
+	while (*(paths + path_index))
 	{
-		paths = ft_split(path_list, ':');
-		while (*paths)
-		{
-			command = find_in_path_element(pathname, *paths);
-			if (command)
-				break ;
-			paths++;
-		}
+		command = find_in_path_element(pathname, *paths);
+		free(*(paths + path_index));
+		if (command)
+			break ;
+		path_index++;
 	}
+	free(paths);
 	return (command);
 }
