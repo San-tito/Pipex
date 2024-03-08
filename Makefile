@@ -6,7 +6,7 @@
 #    By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 18:17:45 by sguzman           #+#    #+#              #
-#    Updated: 2024/03/07 18:31:13 by sguzman          ###   ########.fr        #
+#    Updated: 2024/03/08 22:48:27 by santito          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@
 
 NAME		= pipex 
 CC 		= cc
-CFLAGS		= -Wall -Wextra -Werror #-fsanitize=address -g
+CFLAGS		= -Wall -Wextra -Werror -fsanitize=address -g
 DFLAGS		= -MMD -MF $(@:.o=.d)
 
 ################################################################################
@@ -35,7 +35,7 @@ LIBFTPRINTF		= $(LIBFTPRINTF_PATH)/libftprintf.a
 
 HEADER		= $(INCLUDE_PATH)/pipex.h
 
-SRCS 		= execute_cmd.c findcmd.c
+SRCS 		= error.c execute_cmd.c findcmd.c
 
 MAIN 		= pipex.c 
 

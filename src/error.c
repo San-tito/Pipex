@@ -1,28 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   error.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/08 22:47:48 by santito          ###   ########.fr       */
+/*   Created: 2024/02/22 19:15:47 by sguzman           #+#    #+#             */
+/*   Updated: 2024/03/08 22:48:19 by santito          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main(int argc, char **argv, char **env)
+void    internal_error(char *arg1, char *arg2)
 {
-	char	*command;
-
-	// pid_t	pid;
-	(void)argc;
-	command = search_for_command(*(argv + 1), env);
-	if (!command)
-	{
-		internal_error(*(argv + 1), ": command not found");
-		return (EX_NOTFOUND);
-	}
-	return (shell_execve(command, argv + 1, env));
+        ft_putstr_fd(arg1, STDERR_FILENO);
+        ft_putendl_fd(arg2, STDERR_FILENO);
 }
+
