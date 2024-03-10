@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/08 22:47:22 by santito          ###   ########.fr       */
+/*   Updated: 2024/03/10 14:10:19 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include "ft_printf.h"
 # include <errno.h>
 # include <stdio.h>
+# include <sys/wait.h>
 
 /* ************************************************************************** */
 /*                                Search for command                          */
@@ -30,7 +31,7 @@ int		shell_execve(char *command, char **args, char **env);
 /* ************************************************************************** */
 /*                                Report an error                             */
 /* ************************************************************************** */
-void    internal_error(char *arg1, char *arg2);
+void	internal_error(char *arg1, char *arg2);
 
 /* ************************************************************************** */
 /*                              Special exit statuses                         */
