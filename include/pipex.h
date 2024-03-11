@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/10 14:10:19 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/11 20:44:06 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,50 @@
 
 # include "ft_printf.h"
 # include <errno.h>
+# include <fcntl.h>
 # include <stdio.h>
 # include <sys/wait.h>
 
 /* ************************************************************************** */
+/*                        Definition of the Process  Structure                */
+/* ************************************************************************** */
+typedef struct s_process
+{
+	char				**argv;
+	struct s_process	*next;
+}						t_process;
+
+/* ************************************************************************** */
+/*                        Definition of the Job Structure                     */
+/* ************************************************************************** */
+typedef struct s_job
+{
+	t_process			*process;
+	int					stdin;
+	int					stdout;
+}						t_job;
+
+/* ************************************************************************** */
+/*                             Process functions                              */
+/* ************************************************************************** */
+void					proc_add(t_process **p, char **argv);
+void					launch_process(t_process *p, char **env, int infile,
+							int outfile);
+
+/* ************************************************************************** */
 /*                                Search for command                          */
 /* ************************************************************************** */
-char	*search_for_command(char *pathname, char **env);
+char					*search_for_command(char *pathname, char **env);
 
 /* ************************************************************************** */
 /*                                Execute a command                           */
 /* ************************************************************************** */
-int		shell_execve(char *command, char **args, char **env);
+int						shell_execve(char *command, char **args, char **env);
 
 /* ************************************************************************** */
 /*                                Report an error                             */
 /* ************************************************************************** */
-void	internal_error(char *arg1, char *arg2);
+void					internal_error(char *arg1, char *arg2);
 
 /* ************************************************************************** */
 /*                              Special exit statuses                         */
