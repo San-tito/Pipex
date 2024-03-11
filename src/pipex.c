@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/11 20:42:30 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/11 22:22:53 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,13 @@ void	launch_job(t_job j, char **env)
 	int			outfile;
 
 	infile = j.stdin;
-	p = j.process;
+	p = j.first_process;
 	while (p)
 	{
+		if (pipe(fd))
+			exit(EXIT_FAILURE);
 		if ((*p).next)
-		{
-			if (pipe(fd))
-				exit(EXIT_FAILURE);
 			outfile = *(fd + 1);
-		}
 		else
 			outfile = j.stdout;
 		pid = fork();
@@ -38,11 +36,8 @@ void	launch_job(t_job j, char **env)
 			launch_process(p, env, infile, outfile);
 		else if (pid < 0)
 			exit(EXIT_FAILURE);
-		else
-		{
-			if (waitpid(pid, &status, WAIT_MYPGRP) != pid)
-				exit(EXIT_FAILURE);
-		}
+		else if (waitpid(pid, &status, WAIT_MYPGRP) != pid)
+			exit(EXIT_FAILURE);
 		if (infile != j.stdin)
 			close(infile);
 		if (outfile != j.stdout)
@@ -69,14 +64,20 @@ int	main(int argc, char **argv, char **env)
 		args = ft_split(*(argv + arg_index), ' ');
 		if (!args)
 			return (EXIT_FAILURE);
-		proc_add(&job.process, args);
+		proc_add(&job.first_process, args);
 	}
 	job.stdin = open(*(argv + 1), O_RDONLY);
-	if (job.stdin == -1)
+	if (job.stdin < 0)
+	{
+		perror(*(argv + 1));
 		return (EXIT_FAILURE);
+	}
 	job.stdout = open(*(argv + arg_index), O_WRONLY | O_CREAT | O_TRUNC,
 			S_IRUSR | S_IWUSR);
-	if (job.stdout == -1)
+	if (job.stdout < 0)
+	{
+		perror(*(argv + arg_index));
 		return (EXIT_FAILURE);
+	}
 	launch_job(job, env);
 }
