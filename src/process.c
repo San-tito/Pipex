@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:25:41 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/11 22:14:26 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/12 19:49:58 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,29 @@ void	proc_add(t_process **p, char **argv)
 	{
 		last = proc_last(*p);
 		(*last).next = new;
+	}
+}
+
+void	cleanup_matrix(char **matrix)
+{
+	int	i;
+
+	i = 0;
+	while (*(matrix + i))
+		free(*(matrix + i++));
+	free(matrix);
+}
+
+void	cleanup_processes(t_process **p)
+{
+	t_process	*proc;
+
+	while (*p)
+	{
+		proc = (**p).next;
+		cleanup_matrix((**p).argv);
+		free(*p);
+		*p = proc;
 	}
 }
 

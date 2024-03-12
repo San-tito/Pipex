@@ -6,11 +6,19 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/11 22:22:53 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/12 17:53:31 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
+
+int	process_exit_status(int status)
+{
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	else
+		return (WEXITSTATUS(status));
+}
 
 void	launch_job(t_job j, char **env)
 {
@@ -45,8 +53,7 @@ void	launch_job(t_job j, char **env)
 		infile = *fd;
 		p = (*p).next;
 	}
-	if (WIFEXITED(status))
-		exit(WEXITSTATUS(status));
+	exit(process_exit_status(status));
 }
 
 int	main(int argc, char **argv, char **env)
