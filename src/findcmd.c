@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 19:15:47 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/13 14:07:09 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/14 00:56:17 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,11 +77,10 @@ char	*search_for_command(char *pathname, char **env)
 	while (*(paths + path_index))
 	{
 		command = find_in_path_element(pathname, *(paths + path_index));
-		free(*(paths + path_index));
 		if (command)
 			break ;
 		path_index++;
 	}
-	free(paths);
+	cleanup_matrix(paths);
 	return (command);
 }
