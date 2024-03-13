@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/12 17:53:31 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/13 14:13:53 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,16 +75,10 @@ int	main(int argc, char **argv, char **env)
 	}
 	job.stdin = open(*(argv + 1), O_RDONLY);
 	if (job.stdin < 0)
-	{
 		perror(*(argv + 1));
-		return (EXIT_FAILURE);
-	}
 	job.stdout = open(*(argv + arg_index), O_WRONLY | O_CREAT | O_TRUNC,
 			S_IRUSR | S_IWUSR);
 	if (job.stdout < 0)
-	{
 		perror(*(argv + arg_index));
-		return (EXIT_FAILURE);
-	}
 	launch_job(job, env);
 }
