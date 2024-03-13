@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/11 22:23:20 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/13 22:51:50 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ int						shell_execve(char *command, char **args, char **env);
 /* ************************************************************************** */
 /*                                Report an error                             */
 /* ************************************************************************** */
-void					internal_error(char *arg1, char *arg2);
+int						internal_error(char *arg1, char *arg2, int exit_code);
 
 /* ************************************************************************** */
 /*                              Special exit statuses                         */

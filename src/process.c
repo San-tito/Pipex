@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:25:41 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/13 14:04:39 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/13 22:52:19 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,7 @@ void	launch_process(t_process *p, char **env, int infile, int outfile)
 
 	command = search_for_command(*(*p).argv, env);
 	if (!command)
-	{
-		internal_error(*(*p).argv, ": command not found");
-		exit(EX_NOTFOUND);
-	}
+		exit(internal_error(*(*p).argv, ": command not found", EX_NOTFOUND));
 	if (infile != STDIN_FILENO)
 	{
 		dup2(infile, STDIN_FILENO);

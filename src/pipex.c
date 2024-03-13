@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/13 14:13:53 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/13 23:08:03 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,13 @@ void	launch_job(t_job j, char **env)
 	{
 		if (pipe(fd))
 			exit(EXIT_FAILURE);
+		outfile = j.stdout;
 		if ((*p).next)
 			outfile = *(fd + 1);
-		else
-			outfile = j.stdout;
 		pid = fork();
 		if (pid == 0)
 			launch_process(p, env, infile, outfile);
 		else if (pid < 0)
-			exit(EXIT_FAILURE);
-		else if (waitpid(pid, &status, WAIT_MYPGRP) != pid)
 			exit(EXIT_FAILURE);
 		if (infile != j.stdin)
 			close(infile);
@@ -53,6 +50,8 @@ void	launch_job(t_job j, char **env)
 		infile = *fd;
 		p = (*p).next;
 	}
+	if (waitpid(pid, &status, 0) != pid)
+		exit(EXIT_FAILURE);
 	exit(process_exit_status(status));
 }
 
@@ -63,7 +62,8 @@ int	main(int argc, char **argv, char **env)
 	int		arg_index;
 
 	if (argc < 5)
-		return (EXIT_SUCCESS);
+		return (ft_putstr_fd("Usage: ", STDERR_FILENO), internal_error(*argv,
+				" file1 cmd1 cmd2 ... cmdn file2", EXIT_FAILURE));
 	job = (t_job){};
 	arg_index = 1;
 	while (++arg_index < argc - 1)
@@ -76,8 +76,7 @@ int	main(int argc, char **argv, char **env)
 	job.stdin = open(*(argv + 1), O_RDONLY);
 	if (job.stdin < 0)
 		perror(*(argv + 1));
-	job.stdout = open(*(argv + arg_index), O_WRONLY | O_CREAT | O_TRUNC,
-			S_IRUSR | S_IWUSR);
+	job.stdout = open(*(argv + arg_index), O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (job.stdout < 0)
 		perror(*(argv + arg_index));
 	launch_job(job, env);
