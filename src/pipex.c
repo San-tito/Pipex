@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 01:02:13 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/14 01:16:10 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,13 +33,11 @@ void	launch_job(t_job j, char **env)
 		(*p).infile = *fd;
 		if (p == j.first_process)
 			(*p).infile = j.stdin;
+		if (pipe(fd))
+			exit(EXIT_FAILURE);
 		(*p).outfile = j.stdout;
 		if ((*p).next)
-		{
-			if (pipe(fd))
-				exit(EXIT_FAILURE);
 			(*p).outfile = *(fd + 1);
-		}
 		pid = fork();
 		if (pid == 0)
 			launch_process(p, env);
