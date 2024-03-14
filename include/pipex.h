@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 00:56:44 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/14 00:59:04 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,7 @@ typedef struct s_job
 /*                             Process functions                              */
 /* ************************************************************************** */
 void					proc_add(t_process **p, char **argv);
-void					launch_process(t_process *p, char **env, int infile,
-							int outfile);
+void					launch_process(t_process *p, char **env);
 
 /* ************************************************************************** */
 /*                                Search for command                          */

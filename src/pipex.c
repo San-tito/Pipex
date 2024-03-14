@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/13 23:08:03 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/14 01:02:13 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,28 +26,29 @@ void	launch_job(t_job j, char **env)
 	int			status;
 	pid_t		pid;
 	int			fd[2];
-	int			infile;
-	int			outfile;
 
-	infile = j.stdin;
 	p = j.first_process;
 	while (p)
 	{
-		if (pipe(fd))
-			exit(EXIT_FAILURE);
-		outfile = j.stdout;
+		(*p).infile = *fd;
+		if (p == j.first_process)
+			(*p).infile = j.stdin;
+		(*p).outfile = j.stdout;
 		if ((*p).next)
-			outfile = *(fd + 1);
+		{
+			if (pipe(fd))
+				exit(EXIT_FAILURE);
+			(*p).outfile = *(fd + 1);
+		}
 		pid = fork();
 		if (pid == 0)
-			launch_process(p, env, infile, outfile);
+			launch_process(p, env);
 		else if (pid < 0)
 			exit(EXIT_FAILURE);
-		if (infile != j.stdin)
-			close(infile);
-		if (outfile != j.stdout)
-			close(outfile);
-		infile = *fd;
+		if ((*p).infile != j.stdin)
+			close((*p).infile);
+		if ((*p).outfile != j.stdout)
+			close((*p).outfile);
 		p = (*p).next;
 	}
 	if (waitpid(pid, &status, 0) != pid)
