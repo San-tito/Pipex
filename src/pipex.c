@@ -6,25 +6,15 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 12:49:52 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/14 13:26:44 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	process_exit_status(int status)
-{
-	if (WIFSIGNALED(status))
-		return (128 + WTERMSIG(status));
-	else
-		return (WEXITSTATUS(status));
-}
-
 void	launch_job(t_job j, char **env)
 {
 	t_process	*p;
-	int			status;
-	pid_t		pid;
 	int			fd[2];
 
 	p = j.first_process;
@@ -38,18 +28,16 @@ void	launch_job(t_job j, char **env)
 		(*p).outfile = j.stdout;
 		if ((*p).next)
 			(*p).outfile = *(fd + 1);
-		pid = fork();
-		if (pid == 0)
+		(*p).pid = fork();
+		if ((*p).pid == 0)
 			launch_process(p, env);
-		else if (pid < 0)
+		else if ((*p).pid < 0)
 			exit(EXIT_FAILURE);
 		close((*p).infile);
 		close((*p).outfile);
 		p = (*p).next;
 	}
-	if (waitpid(pid, &status, 0) != pid)
-		exit(EXIT_FAILURE);
-	exit(process_exit_status(status));
+	proc_waitpid(proc_last(j.first_process));
 }
 
 int	main(int argc, char **argv, char **env)

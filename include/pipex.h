@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 00:59:04 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/14 13:26:22 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_process
 	char				**argv;
 	int					infile;
 	int					outfile;
+	pid_t				pid;
 	struct s_process	*next;
 }						t_process;
 
@@ -44,6 +45,9 @@ typedef struct s_job
 /*                             Process functions                              */
 /* ************************************************************************** */
 void					proc_add(t_process **p, char **argv);
+t_process				*proc_last(t_process *p);
+int						process_exit_status(int status);
+int						proc_waitpid(t_process *p);
 void					launch_process(t_process *p, char **env);
 
 /* ************************************************************************** */

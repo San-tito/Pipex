@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:25:41 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 12:48:24 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/14 13:26:43 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,27 +45,21 @@ void	proc_add(t_process **p, char **argv)
 	}
 }
 
-void	cleanup_matrix(char **matrix)
+int	process_exit_status(int status)
 {
-	int	i;
-
-	i = 0;
-	while (*(matrix + i))
-		free(*(matrix + i++));
-	free(matrix);
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
+	else
+		return (WEXITSTATUS(status));
 }
 
-void	cleanup_processes(t_process **p)
+int	proc_waitpid(t_process *p)
 {
-	t_process	*proc;
+	int	status;
 
-	while (*p)
-	{
-		proc = (**p).next;
-		cleanup_matrix((**p).argv);
-		free(*p);
-		*p = proc;
-	}
+	if (waitpid((*p).pid, &status, WAIT_MYPGRP) != (*p).pid)
+		exit(EXIT_FAILURE);
+	exit(process_exit_status(status));
 }
 
 void	launch_process(t_process *p, char **env)
