@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 01:16:10 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/14 12:49:52 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,8 @@ void	launch_job(t_job j, char **env)
 			launch_process(p, env);
 		else if (pid < 0)
 			exit(EXIT_FAILURE);
-		if ((*p).infile != j.stdin)
-			close((*p).infile);
-		if ((*p).outfile != j.stdout)
-			close((*p).outfile);
+		close((*p).infile);
+		close((*p).outfile);
 		p = (*p).next;
 	}
 	if (waitpid(pid, &status, 0) != pid)
