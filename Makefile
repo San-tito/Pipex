@@ -6,7 +6,7 @@
 #    By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 18:17:45 by sguzman           #+#    #+#              #
-#    Updated: 2024/03/14 13:02:13 by sguzman          ###   ########.fr        #
+#    Updated: 2024/03/15 20:09:07 by sguzman          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,8 @@ SRCS_PATH	= ./src
 
 OBJS_PATH 	= ./build
 
+GNL_PATH	= $(SRCS_PATH)/get_next_line
+
 INCLUDE_PATH	= ./include
 
 LIBFTPRINTF_PATH = ./libs/libftprintf
@@ -35,7 +37,11 @@ LIBFTPRINTF		= $(LIBFTPRINTF_PATH)/libftprintf.a
 
 HEADER		= $(INCLUDE_PATH)/pipex.h
 
+GNL_HEADER 	= $(GNL_PATH)/get_next_line.h
+
 SRCS 		= error.c execute_cmd.c findcmd.c process.c
+
+GNL_SRCS 	= get_next_line.c get_next_line_utils.c
 
 MAIN 		= pipex.c 
 
@@ -45,9 +51,13 @@ MAIN 		= pipex.c
 
 OBJS		= $(addprefix $(OBJS_PATH)/, ${SRCS:.c=.o})
 
+GNL_OBJS	= $(addprefix $(OBJS_PATH)/, ${GNL_SRCS:.c=.o})
+
 OBJS_MAIN	= $(addprefix $(OBJS_PATH)/, ${MAIN:.c=.o})
 
 DEPS		= $(addprefix $(OBJS_PATH)/, ${SRCS:.c=.d})
+
+GNL_DEPS	= $(addprefix $(OBJS_PATH)/, ${GNL_SRCS:.c=.d})
 
 DEPS_MAIN	= $(addprefix $(OBJS_PATH)/, ${MAIN:.c=.d})
 
@@ -86,8 +96,8 @@ banner:
 	@echo
 	@printf "%b" "$(RESET)"
 
--include $(DEPS) $(DEPS_MAIN)
-$(NAME):	$(OBJS) $(OBJS_MAIN) $(LIBFTPRINTF)
+-include $(DEPS) $(GNL_DEPS) $(DEPS_MAIN)
+$(NAME):	$(OBJS) $(GNL_OBJS) $(OBJS_MAIN) $(LIBFTPRINTF)
 			@$(CC) $(CFLAGS) $(DFLAGS) -I $(INCLUDE_PATH) $^ -o $@ 
 			@printf "%b%-42s%-42b%-24s%b%s%b\n" "$(BLUE)" "Building program:" "$(CYAN)" $@ "$(GREEN)" "[✓]" "$(RESET)"
 
@@ -98,6 +108,11 @@ $(LIBFTPRINTF):
 $(OBJS_PATH)/%.o: 	$(SRCS_PATH)/%.c $(HEADER) Makefile
 			@mkdir -p $(dir $@)
 			@$(CC) $(CFLAGS) $(DFLAGS) -c $< -o $@ -I $(INCLUDE_PATH) -I $(LIBFTPRINTF_PATH)/include
+			@printf "%b%-42s%-42b%-24s%b%s%b\n" "$(BLUE)" "Compiling:" "$(CYAN)" $< "$(GREEN)" "[✓]" "$(RESET)"
+
+$(OBJS_PATH)/%.o: 	$(GNL_PATH)/%.c $(GNL_HEADER) Makefile
+			@mkdir -p $(dir $@)
+			@$(CC) $(CFLAGS) $(DFLAGS) -c $< -o $@ -I $(GNL_PATH)
 			@printf "%b%-42s%-42b%-24s%b%s%b\n" "$(BLUE)" "Compiling:" "$(CYAN)" $< "$(GREEN)" "[✓]" "$(RESET)"
 
 clean:		banner

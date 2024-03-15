@@ -1,3 +1,6 @@
 [submodule "libs/libftprintf"]
 	path = libs/libftprintf
 	url = https://github.com/San-tito/ft_printf.git
+[submodule "src/get_next_line"]
+	path = src/get_next_line
+	url = https://github.com/San-tito/get_next_line
