@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 13:26:22 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/15 18:12:47 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ typedef struct s_job
 void					proc_add(t_process **p, char **argv);
 t_process				*proc_last(t_process *p);
 int						process_exit_status(int status);
-int						proc_waitpid(t_process *p);
+int						proc_waitpid(t_process *proc);
 void					launch_process(t_process *p, char **env);
 
 /* ************************************************************************** */
@@ -69,6 +69,7 @@ int						internal_error(char *arg1, char *arg2, int exit_code);
 /*                                  Cleanup                                   */
 /* ************************************************************************** */
 void					cleanup_matrix(char **matrix);
+void					cleanup_processes(t_process **p);
 
 /* ************************************************************************** */
 /*                              Special exit statuses                         */

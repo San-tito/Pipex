@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:25:41 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 13:26:43 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/15 18:13:22 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,18 @@ int	process_exit_status(int status)
 		return (WEXITSTATUS(status));
 }
 
-int	proc_waitpid(t_process *p)
+int	proc_waitpid(t_process *proc)
 {
-	int	status;
+	t_process	*p;
+	int			status;
 
-	if (waitpid((*p).pid, &status, WAIT_MYPGRP) != (*p).pid)
-		exit(EXIT_FAILURE);
+	p = proc;
+	while (p)
+	{
+		if (waitpid((*p).pid, &status, WAIT_MYPGRP) != (*p).pid)
+			exit(EXIT_FAILURE);
+		p = (*p).next;
+	}
 	exit(process_exit_status(status));
 }
 
