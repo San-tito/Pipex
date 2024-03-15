@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:25:41 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/15 19:54:01 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/15 21:31:48 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int	proc_waitpid(t_process *proc)
 	p = proc;
 	while (p)
 	{
-		if (waitpid((*p).pid, &status, WAIT_MYPGRP) != (*p).pid)
+		if (waitpid((*p).pid, &status, WUNTRACED | WCONTINUED) != (*p).pid)
 			exit(EXIT_FAILURE);
 		p = (*p).next;
 	}

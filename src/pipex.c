@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/15 20:48:23 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/15 21:29:35 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,8 @@ void	input_dispatcher(t_job j, t_process *p, int write_end)
 	if (j.is_here_doc)
 	{
 		line = get_next_line(STDIN_FILENO);
-		while (line)
+		while (line && ft_strncmp(line, j.limiter, ft_strlen(j.limiter)))
 		{
-			if (!ft_strncmp(line, j.limiter, ft_strlen(j.limiter)))
-				break ;
 			ft_putstr_fd(line, write_end);
 			free(line);
 			line = get_next_line(STDIN_FILENO);
