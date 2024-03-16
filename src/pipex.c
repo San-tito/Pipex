@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/16 02:46:20 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/16 03:00:13 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,22 +14,26 @@
 
 void	make_here_document(t_job *j)
 {
-	int			fd;
-	const char	*filename = "/tmp/pipex.XXXXXX";
 	char		*line;
+	int			fd[2];
+	const char	*filename = "/tmp/pipex.XXXXXX";
 
-	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0600);
-	if (fd < 0)
+	*(fd + 1) = open(filename, O_CREAT | O_WRONLY | O_EXCL, 0600);
+	if (*(fd + 1) < 0)
 		return (perror(filename), exit(EXIT_FAILURE));
 	line = get_next_line(STDIN_FILENO);
 	while (line && ft_strncmp(line, (*j).limiter, ft_strlen((*j).limiter)))
 	{
-		ft_putstr_fd(line, fd);
+		ft_putstr_fd(line, *(fd + 1));
 		free(line);
 		line = get_next_line(STDIN_FILENO);
 	}
-	lseek(fd, 0, SEEK_SET);
-	(*j).stdin = fd;
+	close(*(fd + 1));
+	*fd = open(filename, O_RDONLY);
+	if (*fd < 0)
+		return (perror(filename), exit(EXIT_FAILURE));
+	(*j).stdin = *fd;
+	unlink(filename);
 }
 
 void	launch_job(t_job j, char **env)
