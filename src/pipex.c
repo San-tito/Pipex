@@ -6,30 +6,30 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/15 21:29:35 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/16 02:46:20 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	input_dispatcher(t_job j, t_process *p, int write_end)
+void	make_here_document(t_job *j)
 {
-	char	*line;
+	int			fd;
+	const char	*filename = "/tmp/pipex.XXXXXX";
+	char		*line;
 
-	if (j.is_here_doc)
+	fd = open(filename, O_CREAT | O_RDWR | O_TRUNC, 0600);
+	if (fd < 0)
+		return (perror(filename), exit(EXIT_FAILURE));
+	line = get_next_line(STDIN_FILENO);
+	while (line && ft_strncmp(line, (*j).limiter, ft_strlen((*j).limiter)))
 	{
+		ft_putstr_fd(line, fd);
+		free(line);
 		line = get_next_line(STDIN_FILENO);
-		while (line && ft_strncmp(line, j.limiter, ft_strlen(j.limiter)))
-		{
-			ft_putstr_fd(line, write_end);
-			free(line);
-			line = get_next_line(STDIN_FILENO);
-		}
-		close(write_end);
-		(*p).infile = STDIN_FILENO;
 	}
-	else
-		(*p).infile = j.stdin;
+	lseek(fd, 0, SEEK_SET);
+	(*j).stdin = fd;
 }
 
 void	launch_job(t_job j, char **env)
@@ -41,10 +41,10 @@ void	launch_job(t_job j, char **env)
 	while (p)
 	{
 		(*p).infile = *fd;
+		if (p == j.first_process)
+			(*p).infile = j.stdin;
 		if (pipe(fd))
 			exit(EXIT_FAILURE);
-		if (p == j.first_process)
-			input_dispatcher(j, p, *(fd + 1));
 		(*p).outfile = j.stdout;
 		if ((*p).next)
 			(*p).outfile = *(fd + 1);
@@ -53,7 +53,8 @@ void	launch_job(t_job j, char **env)
 			launch_process(p, env);
 		else if ((*p).pid < 0)
 			exit(EXIT_FAILURE);
-		close((*p).infile);
+		if ((*p).infile != j.stdin)
+			close((*p).infile);
 		close((*p).outfile);
 		p = (*p).next;
 	}
@@ -102,7 +103,10 @@ int	main(int argc, char **argv, char **env)
 		return (ft_putstr_fd("Usage: ", STDERR_FILENO), internal_error(*argv,
 				" here_doc LIMITER cmd cmd1 ... cmdn file", EXIT_FAILURE));
 	if (job.is_here_doc)
+	{
 		job.limiter = *(argv + 2);
+		make_here_document(&job);
+	}
 	create_job(argc, argv, &job);
 	launch_job(job, env);
 }
