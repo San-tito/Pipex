@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/16 03:00:13 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/16 19:44:46 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,24 +15,24 @@
 void	make_here_document(t_job *j)
 {
 	char		*line;
-	int			fd[2];
+	int			fd;
 	const char	*filename = "/tmp/pipex.XXXXXX";
 
-	*(fd + 1) = open(filename, O_CREAT | O_WRONLY | O_EXCL, 0600);
-	if (*(fd + 1) < 0)
+	fd = open(filename, O_CREAT | O_WRONLY | O_EXCL, 0600);
+	if (fd < 0)
 		return (perror(filename), exit(EXIT_FAILURE));
 	line = get_next_line(STDIN_FILENO);
 	while (line && ft_strncmp(line, (*j).limiter, ft_strlen((*j).limiter)))
 	{
-		ft_putstr_fd(line, *(fd + 1));
+		ft_putstr_fd(line, fd);
 		free(line);
 		line = get_next_line(STDIN_FILENO);
 	}
-	close(*(fd + 1));
-	*fd = open(filename, O_RDONLY);
-	if (*fd < 0)
+	close(fd);
+	fd = open(filename, O_RDONLY);
+	if (fd < 0)
 		return (perror(filename), exit(EXIT_FAILURE));
-	(*j).stdin = *fd;
+	(*j).stdin = fd;
 	unlink(filename);
 }
 
