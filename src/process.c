@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:25:41 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/16 01:03:33 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/17 16:45:40 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,10 @@ int	proc_waitpid(t_process *proc)
 	while (p)
 	{
 		if (waitpid((*p).pid, &status, WUNTRACED | WCONTINUED) != (*p).pid)
-			exit(EXIT_FAILURE);
+			return (cleanup_processes(&proc), EXIT_FAILURE);
 		p = (*p).next;
 	}
-	exit(process_exit_status(status));
+	return (cleanup_processes(&proc), process_exit_status(status));
 }
 
 void	launch_process(t_process *p, char **env)
@@ -78,7 +78,8 @@ void	launch_process(t_process *p, char **env)
 	infile = (*p).infile;
 	outfile = (*p).outfile;
 	if (!command)
-		exit(internal_error(*(*p).argv, ": command not found", EX_NOTFOUND));
+		return (cleanup_matrix((*p).argv), exit(internal_error(*(*p).argv,
+					": command not found", EX_NOTFOUND)));
 	if (infile != STDIN_FILENO)
 	{
 		if (dup2(infile, STDIN_FILENO) < 0)

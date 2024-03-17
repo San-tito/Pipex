@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/17 14:40:34 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/17 15:11:03 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ typedef struct s_job
 {
 	int					stdin;
 	int					stdout;
-	t_process			*first_process;
+	t_process			*process;
 }						t_job;
 
 /* ************************************************************************** */

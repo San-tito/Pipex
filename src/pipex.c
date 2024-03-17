@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/17 15:07:42 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/17 16:42:14 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,14 +41,14 @@ void	launch_job(t_job j, char **env)
 	t_process	*p;
 	int			fd[2];
 
-	p = j.first_process;
+	p = j.process;
 	while (p)
 	{
 		(*p).infile = *fd;
-		if (p == j.first_process)
+		if (p == j.process)
 			(*p).infile = j.stdin;
 		if (pipe(fd))
-			exit(EXIT_FAILURE);
+			return (cleanup_processes(&j.process), exit(EXIT_FAILURE));
 		(*p).outfile = j.stdout;
 		if ((*p).next)
 			(*p).outfile = *(fd + 1);
@@ -56,13 +56,13 @@ void	launch_job(t_job j, char **env)
 		if ((*p).pid == 0)
 			launch_process(p, env);
 		else if ((*p).pid < 0)
-			exit(EXIT_FAILURE);
+			return (cleanup_processes(&j.process), exit(EXIT_FAILURE));
 		if ((*p).infile != j.stdin)
 			close((*p).infile);
 		close((*p).outfile);
 		p = (*p).next;
 	}
-	proc_waitpid(j.first_process);
+	exit(proc_waitpid(j.process));
 }
 
 void	create_job(int ac, char **av, t_job *job, int is_here_doc)
@@ -78,9 +78,8 @@ void	create_job(int ac, char **av, t_job *job, int is_here_doc)
 	{
 		argv = ft_split(*(av + arg_index), ' ');
 		if (!argv)
-			return (cleanup_processes(&(*job).first_process),
-				exit(EXIT_FAILURE));
-		proc_add(&(*job).first_process, argv);
+			return (cleanup_processes(&(*job).process), exit(EXIT_FAILURE));
+		proc_add(&(*job).process, argv);
 	}
 	if (!is_here_doc)
 		(*job).stdin = open(*(av + 1), O_RDONLY);
