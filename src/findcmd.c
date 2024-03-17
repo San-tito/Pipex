@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 19:15:47 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/14 00:56:17 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/17 23:38:28 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,5 @@ char	*search_for_command(char *pathname, char **env)
 			break ;
 		path_index++;
 	}
-	cleanup_matrix(paths);
-	return (command);
+	return (cleanup_matrix(paths), command);
 }

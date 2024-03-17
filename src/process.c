@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/11 13:25:41 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/17 16:45:40 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/18 00:08:59 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,7 @@ int	proc_waitpid(t_process *proc)
 	return (cleanup_processes(&proc), process_exit_status(status));
 }
 
-void	launch_process(t_process *p, char **env)
+void	launch_process(t_job *j, t_process *p, char **env)
 {
 	char	*command;
 	int		infile;
@@ -78,19 +78,18 @@ void	launch_process(t_process *p, char **env)
 	infile = (*p).infile;
 	outfile = (*p).outfile;
 	if (!command)
-		return (cleanup_matrix((*p).argv), exit(internal_error(*(*p).argv,
-					": command not found", EX_NOTFOUND)));
-	if (infile != STDIN_FILENO)
 	{
-		if (dup2(infile, STDIN_FILENO) < 0)
-			exit(EXIT_FAILURE);
-		close(infile);
+		internal_error(*(*p).argv, ": command not found", EX_NOTFOUND);
+		return (cleanup_processes(&(*j).process), free(command),
+			exit(EX_NOTFOUND));
 	}
-	if (outfile != STDOUT_FILENO)
-	{
-		if (dup2(outfile, STDOUT_FILENO) < 0)
-			exit(EXIT_FAILURE);
-		close(outfile);
-	}
+	if (dup2(infile, STDIN_FILENO) < 0)
+		return (cleanup_processes(&(*j).process), free(command),
+			exit(EXIT_FAILURE));
+	close(infile);
+	if (dup2(outfile, STDOUT_FILENO) < 0)
+		return (cleanup_processes(&(*j).process), free(command),
+			exit(EXIT_FAILURE));
+	close(outfile);
 	exit(shell_execve(command, (*p).argv, env));
 }

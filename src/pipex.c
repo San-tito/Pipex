@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/17 16:42:14 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/18 00:18:07 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,13 @@ void	make_here_document(int *redirect, char *limiter)
 		(perror(filename));
 	unlink(filename);
 	line = get_next_line(STDIN_FILENO);
-	while (line && ft_strncmp(line, limiter, ft_strlen(limiter)))
+	while (line)
 	{
+		if (!ft_strncmp(line, limiter, ft_strlen(limiter)))
+		{
+			free(line);
+			break ;
+		}
 		ft_putstr_fd(line, *(fd + 1));
 		free(line);
 		line = get_next_line(STDIN_FILENO);
@@ -54,7 +59,7 @@ void	launch_job(t_job j, char **env)
 			(*p).outfile = *(fd + 1);
 		(*p).pid = fork();
 		if ((*p).pid == 0)
-			launch_process(p, env);
+			launch_process(&j, p, env);
 		else if ((*p).pid < 0)
 			return (cleanup_processes(&j.process), exit(EXIT_FAILURE));
 		if ((*p).infile != j.stdin)

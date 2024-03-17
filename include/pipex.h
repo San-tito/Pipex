@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 16:00:07 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/17 15:11:03 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/18 00:07:38 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void					proc_add(t_process **p, char **argv);
 t_process				*proc_last(t_process *p);
 int						process_exit_status(int status);
 int						proc_waitpid(t_process *proc);
-void					launch_process(t_process *p, char **env);
+void					launch_process(t_job *j, t_process *p, char **env);
 
 /* ************************************************************************** */
 /*                                Search for command                          */
@@ -74,6 +74,7 @@ int						internal_error(char *arg1, char *arg2, int exit_code);
 /*                                  Cleanup                                   */
 /* ************************************************************************** */
 void					cleanup_matrix(char **matrix);
+void					cleanup_process(t_process **p);
 void					cleanup_processes(t_process **p);
 
 /* ************************************************************************** */
