@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/17 14:39:58 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/17 15:07:42 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,25 +15,25 @@
 void	make_here_document(int *redirect, char *limiter)
 {
 	char		*line;
-	int			fd;
+	int			fd[2];
 	const char	*filename = "/tmp/pipex.XXXXXX";
 
-	fd = open(filename, O_CREAT | O_WRONLY | O_EXCL, 0600);
-	if (fd < 0)
+	*(fd + 1) = open(filename, O_CREAT | O_WRONLY | O_EXCL, 0600);
+	if (*(fd + 1) < 0)
 		(perror(filename));
+	*fd = open(filename, O_RDONLY);
+	if (*fd < 0)
+		(perror(filename));
+	unlink(filename);
 	line = get_next_line(STDIN_FILENO);
 	while (line && ft_strncmp(line, limiter, ft_strlen(limiter)))
 	{
-		ft_putstr_fd(line, fd);
+		ft_putstr_fd(line, *(fd + 1));
 		free(line);
 		line = get_next_line(STDIN_FILENO);
 	}
-	close(fd);
-	fd = open(filename, O_RDONLY);
-	if (fd < 0)
-		(perror(filename));
-	*redirect = fd;
-	unlink(filename);
+	close(*(fd + 1));
+	*redirect = *fd;
 }
 
 void	launch_job(t_job j, char **env)
@@ -104,7 +104,7 @@ int	main(int argc, char **argv, char **env)
 		return (ft_putstr_fd("Usage: ", STDERR_FILENO), internal_error(*argv,
 				" file1 cmd1 cmd2 ... cmdn file2", EXIT_FAILURE));
 	is_here_doc = ft_strncmp(*(argv + 1), "here_doc", 9) == 0;
-	if (argc < 6 && job.is_here_doc)
+	if (argc < 6 && is_here_doc)
 		return (ft_putstr_fd("Usage: ", STDERR_FILENO), internal_error(*argv,
 				" here_doc LIMITER cmd cmd1 ... cmdn file", EXIT_FAILURE));
 	if (is_here_doc)
