@@ -6,13 +6,13 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/16 19:44:46 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/17 14:39:58 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	make_here_document(t_job *j)
+void	make_here_document(int *redirect, char *limiter)
 {
 	char		*line;
 	int			fd;
@@ -20,9 +20,9 @@ void	make_here_document(t_job *j)
 
 	fd = open(filename, O_CREAT | O_WRONLY | O_EXCL, 0600);
 	if (fd < 0)
-		return (perror(filename), exit(EXIT_FAILURE));
+		(perror(filename));
 	line = get_next_line(STDIN_FILENO);
-	while (line && ft_strncmp(line, (*j).limiter, ft_strlen((*j).limiter)))
+	while (line && ft_strncmp(line, limiter, ft_strlen(limiter)))
 	{
 		ft_putstr_fd(line, fd);
 		free(line);
@@ -31,8 +31,8 @@ void	make_here_document(t_job *j)
 	close(fd);
 	fd = open(filename, O_RDONLY);
 	if (fd < 0)
-		return (perror(filename), exit(EXIT_FAILURE));
-	(*j).stdin = fd;
+		(perror(filename));
+	*redirect = fd;
 	unlink(filename);
 }
 
@@ -65,14 +65,14 @@ void	launch_job(t_job j, char **env)
 	proc_waitpid(j.first_process);
 }
 
-void	create_job(int ac, char **av, t_job *job)
+void	create_job(int ac, char **av, t_job *job, int is_here_doc)
 {
 	char	**argv;
 	int		flags;
 	int		arg_index;
 
 	arg_index = 1;
-	if ((*job).is_here_doc)
+	if (is_here_doc)
 		arg_index++;
 	while (++arg_index < ac - 1)
 	{
@@ -82,12 +82,12 @@ void	create_job(int ac, char **av, t_job *job)
 				exit(EXIT_FAILURE));
 		proc_add(&(*job).first_process, argv);
 	}
-	if (!(*job).is_here_doc)
+	if (!is_here_doc)
 		(*job).stdin = open(*(av + 1), O_RDONLY);
 	if ((*job).stdin < 0)
 		perror(*(av + 1));
 	flags = O_WRONLY | O_CREAT | O_TRUNC;
-	if ((*job).is_here_doc)
+	if (is_here_doc)
 		flags = O_WRONLY | O_CREAT | O_APPEND;
 	(*job).stdout = open(*(av + arg_index), flags, 0644);
 	if ((*job).stdout < 0)
@@ -97,20 +97,18 @@ void	create_job(int ac, char **av, t_job *job)
 int	main(int argc, char **argv, char **env)
 {
 	t_job	job;
+	int		is_here_doc;
 
 	job = (t_job){};
 	if (argc < 5)
 		return (ft_putstr_fd("Usage: ", STDERR_FILENO), internal_error(*argv,
 				" file1 cmd1 cmd2 ... cmdn file2", EXIT_FAILURE));
-	job.is_here_doc = ft_strncmp(*(argv + 1), "here_doc", 9) == 0;
+	is_here_doc = ft_strncmp(*(argv + 1), "here_doc", 9) == 0;
 	if (argc < 6 && job.is_here_doc)
 		return (ft_putstr_fd("Usage: ", STDERR_FILENO), internal_error(*argv,
 				" here_doc LIMITER cmd cmd1 ... cmdn file", EXIT_FAILURE));
-	if (job.is_here_doc)
-	{
-		job.limiter = *(argv + 2);
-		make_here_document(&job);
-	}
-	create_job(argc, argv, &job);
+	if (is_here_doc)
+		make_here_document(&job.stdin, *(argv + 2));
+	create_job(argc, argv, &job, is_here_doc);
 	launch_job(job, env);
 }
