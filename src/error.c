@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 19:15:47 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/18 00:07:21 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/18 12:19:44 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ void	cleanup_matrix(char **matrix)
 	while (*(matrix + i))
 		free(*(matrix + i++));
 	free(matrix);
+	matrix = NULL;
 }
 
 void	cleanup_processes(t_process **p)
