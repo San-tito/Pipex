@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 15:56:46 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/18 00:18:07 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/18 16:11:50 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,33 +41,32 @@ void	make_here_document(int *redirect, char *limiter)
 	*redirect = *fd;
 }
 
-void	launch_job(t_job j, char **env)
+void	launch_job(t_job *j, char **env)
 {
 	t_process	*p;
 	int			fd[2];
 
-	p = j.process;
+	p = (*j).process;
 	while (p)
 	{
 		(*p).infile = *fd;
-		if (p == j.process)
-			(*p).infile = j.stdin;
+		if (p == (*j).process)
+			(*p).infile = (*j).stdin;
 		if (pipe(fd))
-			return (cleanup_processes(&j.process), exit(EXIT_FAILURE));
-		(*p).outfile = j.stdout;
+			return (cleanup_processes(&(*j).process), exit(EXIT_FAILURE));
+		(*p).outfile = (*j).stdout;
 		if ((*p).next)
 			(*p).outfile = *(fd + 1);
 		(*p).pid = fork();
 		if ((*p).pid == 0)
-			launch_process(&j, p, env);
+			launch_process(j, p, env);
 		else if ((*p).pid < 0)
-			return (cleanup_processes(&j.process), exit(EXIT_FAILURE));
-		if ((*p).infile != j.stdin)
-			close((*p).infile);
+			return (cleanup_processes(&(*j).process), exit(EXIT_FAILURE));
+		close((*p).infile);
 		close((*p).outfile);
 		p = (*p).next;
 	}
-	exit(proc_waitpid(j.process));
+	exit(proc_waitpid((*j).process));
 }
 
 void	create_job(int ac, char **av, t_job *job, int is_here_doc)
@@ -114,5 +113,5 @@ int	main(int argc, char **argv, char **env)
 	if (is_here_doc)
 		make_here_document(&job.stdin, *(argv + 2));
 	create_job(argc, argv, &job, is_here_doc);
-	launch_job(job, env);
+	launch_job(&job, env);
 }

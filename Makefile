@@ -6,7 +6,7 @@
 #    By: sguzman <sguzman@student.42barcelo>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2024/01/16 18:17:45 by sguzman           #+#    #+#              #
-#    Updated: 2024/03/15 20:09:07 by sguzman          ###   ########.fr        #
+#    Updated: 2024/03/18 16:01:12 by sguzman          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@
 
 NAME		= pipex 
 CC 		= cc
-CFLAGS		= -Wall -Wextra -Werror #-fsanitize=address -g
+CFLAGS		= -Wall -Wextra -Werror #-g -fsanitize=address -fno-omit-frame-pointer 
 DFLAGS		= -MMD -MF $(@:.o=.d)
 
 ################################################################################
