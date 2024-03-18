@@ -6,7 +6,7 @@
 /*   By: sguzman <sguzman@student.42barcelona.com>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/22 19:15:47 by sguzman           #+#    #+#             */
-/*   Updated: 2024/03/17 23:38:28 by sguzman          ###   ########.fr       */
+/*   Updated: 2024/03/18 15:13:16 by sguzman          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,11 @@ char	*search_for_command(char *pathname, char **env)
 	path_index = 0;
 	path_list = ft_getenv("PATH", env);
 	if (!pathname)
-		return (command = pathname);
+		return (NULL);
 	else if (absolute_program(pathname))
-		return (command = pathname);
+		return (ft_strdup(pathname));
 	else if (!path_list || !*path_list)
-		return (command = pathname);
+		return (NULL);
 	paths = ft_split(path_list, ':');
 	if (!paths)
 		return (NULL);
