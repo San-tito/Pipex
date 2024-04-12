@@ -28,7 +28,7 @@ void	make_here_document(int *redirect, char *limiter)
 	line = get_next_line(STDIN_FILENO);
 	while (line)
 	{
-		if (!ft_strncmp(line, limiter, ft_strlen(limiter)))
+		if (!ft_strncmp(line, limiter, ft_strlen(limiter)) && line[ft_strlen(limiter)] == '\n')
 		{
 			free(line);
 			break ;
